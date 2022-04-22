@@ -16,6 +16,8 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pdfRendering, setPdfRendering] = useState("");
   const [pageRendering, setPageRendering] = useState("");
+  const [status, setStatus] = useState("");
+  const [stamp, setStamp] = useState("");
 
   async function showPdf(event) {
     try {
@@ -46,7 +48,7 @@ function App() {
       canvasContext: document.querySelector("#pdf-canvas").getContext("2d"),
       viewport: viewport,
     };
-    console.log("viewport", viewport, viewport.scale);
+    // console.log("viewport", viewport, viewport.scale);
     setWidth(viewport.width);
     setHeight(viewport.height);
     setScale(viewport.scale);
@@ -58,10 +60,30 @@ function App() {
     setImage(img);
   }
 
+  // .
+
   useEffect(() => {
     pdf && renderPage();
     // eslint-disable-next-line
   }, [pdf, currentPage]);
+
+  useEffect(() => {
+    if (status === "approved") {
+      setStamp(
+        <Stamp width={width} height={height} file={image} color="green" />
+      );
+    } else if (status === "deferred") {
+      setStamp(
+        <Stamp width={width} height={height} file={image} color="blue" />
+      );
+    } else if (status === "denied") {
+      setStamp(
+        <Stamp width={width} height={height} file={image} color="red" />
+      );
+    } else {
+      setStamp("");
+    }
+  }, [status]);
 
   return (
     <div className="App">
@@ -84,25 +106,41 @@ function App() {
           Loading document ...
         </div>
         <div id="pdf-contents">
-          <div id="pdf-meta">
-            <div id="pdf-buttons">
-              <button id="pdf-prev" onClick={() => changePage(currentPage - 1)}>
-                Previous
-              </button>
-              <button id="pdf-next" onClick={() => changePage(currentPage + 1)}>
-                Next
-              </button>
-            </div>
-            <div id="page-count-container">
-              Page {currentPage} of <div id="pdf-total-pages">{totalPages}</div>
-            </div>
-          </div>
-          <canvas id="pdf-canvas" width={width} height={height}></canvas>
-          <div id="page-loader" hidden={pageRendering}>
-            Loading page ...
-          </div>
+          <div id="pdf-meta"> */}
+      <div id="pdf-buttons">
+        <button id="pdf-prev" onClick={() => changePage(currentPage - 1)}>
+          Previous
+        </button>
+        <button id="pdf-next" onClick={() => changePage(currentPage + 1)}>
+          Next
+        </button>
+      </div>
+      <div id="page-count-container">
+        Page {currentPage} of <div id="pdf-total-pages">{totalPages}</div>
+      </div>
+      {image ? (
+        <div class="dropdown">
+          <select
+            id="Mobility"
+            name="Mobility"
+            onChange={(e) => setStatus(e.target.value)}
+          >
+            <option selected="">Select Status</option>
+            <option value="approved">Approved</option>
+            <option value="deferred">Deferred</option>
+            <option value="denied">Denied</option>
+          </select>
         </div>
-      </div> */}
+      ) : (
+        ""
+      )}
+      {/* </div> */}
+      {/* //     <canvas id="pdf-canvas" width={width} height={height}></canvas>
+      //     <div id="page-loader" hidden={pageRendering}>
+      //       Loading page ...
+      //     </div>
+      //   </div> */}
+      {/* // </div> */}
       <canvas
         id="pdf-canvas"
         width={width}
@@ -110,16 +148,7 @@ function App() {
         style={{ visibility: "hidden", position: "absolute" }}
       ></canvas>
 
-      {image && (
-        <>
-          {/* <img
-            src={image}
-            style={{ width: width, height: height }}
-            alt="pdfImage"
-          /> */}
-          <Stamp file={image} height={height} width={width} />
-        </>
-      )}
+      {stamp && status ? stamp : ""}
     </div>
   );
 }
