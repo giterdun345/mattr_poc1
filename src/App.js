@@ -43,7 +43,6 @@ function App() {
     var page = await pdf.getPage(currentPage);
     console.log("renderpage 2");
     var viewport = page.getViewport(currentPage);
-    console.log("renderpage 3");
     var render_context = {
       canvasContext: document.querySelector("#pdf-canvas").getContext("2d"),
       viewport: viewport,
@@ -64,6 +63,7 @@ function App() {
 
   useEffect(() => {
     pdf && renderPage();
+
     // eslint-disable-next-line
   }, [pdf, currentPage]);
 
@@ -81,7 +81,7 @@ function App() {
         <Stamp width={width} height={height} file={image} color="red" />
       );
     } else {
-      setStamp("");
+      setStamp(<img src={image} alt="pdf file" />);
     }
   }, [status]);
 
